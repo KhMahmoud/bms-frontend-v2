@@ -3,13 +3,14 @@ import { BadgeCheck, Building2, Globe2, PhoneCall } from "lucide-react";
 import { ResourceModulePage } from "../components/modules/ResourceModulePage";
 import { StatusBadge } from "../components/ui/StatusBadge";
 import { useAuth } from "../hooks/useAuth";
+import { getModuleWriteAccess } from "../lib/access";
 import { createSupplier, getSuppliers, updateSupplier } from "../services/modules";
 import type { Supplier } from "../types/api";
 
 export function SuppliersPage() {
   const { user } = useAuth();
   const palestinianMobilePattern = /^(059|056)\d{7}$/;
-  const canManageSuppliers = user?.role === "admin" || user?.role === "manager";
+  const { canWrite, reason } = getModuleWriteAccess(user);
   const paymentMethodOptions = [
     { label: "نقداً", value: "نقداً" },
     { label: "شيك", value: "شيك" },
@@ -27,8 +28,9 @@ export function SuppliersPage() {
       title="المورّدون"
       description="نظّم بيانات الجهات التي تشتري منها البضاعة أو الخدمات."
       createLabel="مورد جديد"
-      canCreate={canManageSuppliers}
-      canEdit={canManageSuppliers}
+      canCreate={canWrite}
+      canEdit={canWrite}
+      readOnlyNotice={reason}
       fetchList={getSuppliers}
       createItem={(payload) => createSupplier(payload as Partial<Supplier>)}
       updateItem={(id, payload) => updateSupplier(id, payload as Partial<Supplier>)}

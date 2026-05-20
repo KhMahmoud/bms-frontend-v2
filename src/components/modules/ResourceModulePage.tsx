@@ -88,6 +88,7 @@ export function ResourceModulePage<T extends { id: string }>({
   rowSelectionHint = "اضغط تعديل لتحديث البيانات.",
   canCreate = true,
   canEdit = true,
+  readOnlyNotice,
   validateForm,
   onFieldChange,
 }: {
@@ -113,6 +114,7 @@ export function ResourceModulePage<T extends { id: string }>({
   rowSelectionHint?: string;
   canCreate?: boolean;
   canEdit?: boolean;
+  readOnlyNotice?: string;
   validateForm?: (
     formValues: Record<string, string>,
     editingItem: T | null
@@ -243,6 +245,14 @@ export function ResourceModulePage<T extends { id: string }>({
     setSubmitting(true);
     setValidationErrors({});
 
+    if ((editingItem && !canEdit) || (!editingItem && !canCreate)) {
+      setValidationErrors({
+        detail: readOnlyNotice || "لا تملك صلاحية حفظ التغييرات في هذا القسم.",
+      });
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const clientValidationErrors = validateForm?.(formValues, editingItem) ?? null;
       if (clientValidationErrors) {
@@ -371,22 +381,26 @@ export function ResourceModulePage<T extends { id: string }>({
       ) : rows.length === 0 ? (
         <StatePanel
           title="لا توجد نتائج"
-          description="لا توجد عناصر مطابقة للبحث أو عوامل التصفية الحالية. يمكنك إعادة الضبط أو إضافة عنصر جديد."
-          action={
+          description={
+            canCreate
+              ? "لا توجد عناصر مطابقة للبحث أو عوامل التصفية الحالية. يمكنك إعادة الضبط أو إضافة عنصر جديد."
+              : readOnlyNotice || "لا توجد عناصر مطابقة للبحث أو عوامل التصفية الحالية."
+          }
+          action={canCreate ? (
             <button
               type="button"
               onClick={openCreateDrawer}
               className="btn-primary rounded-lg px-4 py-2.5 text-sm font-semibold transition"
             >
-              حفظ
+              {createLabel}
             </button>
-          }
+          ) : undefined}
         />
       ) : (
         <>
           <div className="flex items-center justify-between px-1 text-sm text-slate-500">
             <p className="text-slate-500">إجمالي العناصر: {count}</p>
-            <p className="text-slate-500">{canEdit ? rowSelectionHint : "العرض متاح فقط حسب صلاحيات الحساب الحالي."}</p>
+            <p className="text-slate-500">{canEdit ? rowSelectionHint : readOnlyNotice || "العرض متاح فقط حسب صلاحيات الحساب الحالي."}</p>
           </div>
           <DataTable columns={columns} rows={rows} onRowClick={canEdit ? openEditDrawer : undefined} />
         </>

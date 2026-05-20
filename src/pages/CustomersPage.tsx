@@ -2,11 +2,17 @@ import { Ban, CircleCheckBig, MapPin, Users } from "lucide-react";
 
 import { ResourceModulePage } from "../components/modules/ResourceModulePage";
 import { StatusBadge } from "../components/ui/StatusBadge";
+import { useAuth } from "../hooks/useAuth";
+import { isDemoUser } from "../lib/access";
 import { createCustomer, getCustomers, updateCustomer } from "../services/modules";
 import type { Customer } from "../types/api";
 
 export function CustomersPage() {
+  const { user } = useAuth();
   const palestinianMobilePattern = /^(059|056)\d{7}$/;
+  const demoWriteOverrideEnabled = import.meta.env.VITE_ENABLE_DEMO_WRITES === "true";
+  const isReadOnlyDemoAccount = isDemoUser(user) && !demoWriteOverrideEnabled;
+  const readOnlyReason = "تم تعطيل الإنشاء والتعديل لحسابات العرض لحماية البيانات التجريبية.";
 
   return (
     <ResourceModulePage<Customer>
@@ -14,6 +20,9 @@ export function CustomersPage() {
       title="العملاء"
       description="تابع بيانات الزبائن الذين تبيع لهم أو تصدر لهم فواتير."
       createLabel="عميل جديد"
+      canCreate={!isReadOnlyDemoAccount}
+      canEdit={!isReadOnlyDemoAccount}
+      readOnlyNotice={isReadOnlyDemoAccount ? readOnlyReason : undefined}
       fetchList={getCustomers}
       createItem={(payload) => createCustomer(payload as Partial<Customer>)}
       updateItem={(id, payload) => updateCustomer(id, payload as Partial<Customer>)}
