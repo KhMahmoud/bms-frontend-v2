@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ResourceModulePage } from "../components/modules/ResourceModulePage";
 import { StatusBadge } from "../components/ui/StatusBadge";
+import { useAuth } from "../hooks/useAuth";
 import { createProduct, getProductCategories, getProducts, updateProduct } from "../services/modules";
 import type { Product, ProductCategory } from "../types/api";
 import { formatCurrency } from "../lib/utils";
@@ -17,7 +18,9 @@ function getCategoryLabel(name: string) {
 }
 
 export function ProductsPage() {
+  const { user } = useAuth();
   const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const canManageProducts = user?.role === "admin" || user?.role === "manager";
 
   useEffect(() => {
     let isMounted = true;
@@ -43,6 +46,8 @@ export function ProductsPage() {
       title="المنتجات"
       description="أضف المنتجات وتابع أسعارها وكمياتها وحالتها من شاشة واحدة واضحة وسهلة."
       createLabel="منتج جديد"
+      canCreate={canManageProducts}
+      canEdit={canManageProducts}
       fetchList={getProducts}
       createItem={(payload) => createProduct(payload as Partial<Product>)}
       updateItem={(id, payload) => updateProduct(id, payload as Partial<Product>)}

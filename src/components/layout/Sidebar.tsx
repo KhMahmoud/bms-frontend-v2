@@ -49,6 +49,22 @@ export function Sidebar() {
       <nav className="mt-5 flex-1 space-y-1.5 overflow-y-auto pr-0.5">
         {navItems.map((item) => {
           const Icon = item.icon;
+          if (!item.ready) {
+            return (
+              <div
+                key={item.to}
+                aria-disabled="true"
+                className="flex items-center gap-3 rounded-xl border border-dashed border-white/10 bg-white/[0.035] px-3 py-2.5 text-sm font-medium text-slate-400"
+              >
+                <Icon className="h-4 w-4" />
+                <span>{item.label}</span>
+                <span className="mr-auto rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold tracking-[0.12em] text-amber-200">
+                  قريباً
+                </span>
+              </div>
+            );
+          }
+
           return (
             <NavLink
               key={item.to}
@@ -59,19 +75,12 @@ export function Sidebar() {
                   "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
                   isActive
                     ? "bg-white text-[#172554] shadow-sm"
-                    : item.ready
-                      ? "text-slate-200 hover:bg-white/10 hover:text-white"
-                      : "border border-dashed border-white/10 bg-white/[0.035] text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
+                    : "text-slate-200 hover:bg-white/10 hover:text-white"
                 )
               }
             >
               <Icon className="h-4 w-4" />
               <span>{item.label}</span>
-              {!item.ready ? (
-                <span className="mr-auto rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold tracking-[0.12em] text-amber-200">
-                  قريباً
-                </span>
-              ) : null}
             </NavLink>
           );
         })}

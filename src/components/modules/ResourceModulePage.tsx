@@ -86,6 +86,8 @@ export function ResourceModulePage<T extends { id: string }>({
   summaries,
   defaultSearchPlaceholder,
   rowSelectionHint = "اضغط تعديل لتحديث البيانات.",
+  canCreate = true,
+  canEdit = true,
   validateForm,
   onFieldChange,
 }: {
@@ -109,6 +111,8 @@ export function ResourceModulePage<T extends { id: string }>({
   summaries: Summary<T>[];
   defaultSearchPlaceholder?: string;
   rowSelectionHint?: string;
+  canCreate?: boolean;
+  canEdit?: boolean;
   validateForm?: (
     formValues: Record<string, string>,
     editingItem: T | null
@@ -179,6 +183,10 @@ export function ResourceModulePage<T extends { id: string }>({
   );
 
   const openCreateDrawer = () => {
+    if (!canCreate) {
+      return;
+    }
+
     const initialValues = buildInitialValues(null);
     setEditingItem(null);
     setValidationErrors({});
@@ -188,6 +196,10 @@ export function ResourceModulePage<T extends { id: string }>({
   };
 
   const openEditDrawer = (item: T) => {
+    if (!canEdit) {
+      return;
+    }
+
     const initialValues = buildInitialValues(item);
     setEditingItem(item);
     setValidationErrors({});
@@ -273,7 +285,7 @@ export function ResourceModulePage<T extends { id: string }>({
         eyebrow={eyebrow}
         title={title}
         description={description}
-        actions={
+        actions={canCreate ? (
           <button
             type="button"
             onClick={openCreateDrawer}
@@ -282,7 +294,7 @@ export function ResourceModulePage<T extends { id: string }>({
             <Plus className="h-4 w-4" />
             {createLabel}
           </button>
-        }
+        ) : undefined}
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -374,9 +386,9 @@ export function ResourceModulePage<T extends { id: string }>({
         <>
           <div className="flex items-center justify-between px-1 text-sm text-slate-500">
             <p className="text-slate-500">إجمالي العناصر: {count}</p>
-            <p className="text-slate-500">{rowSelectionHint}</p>
+            <p className="text-slate-500">{canEdit ? rowSelectionHint : "العرض متاح فقط حسب صلاحيات الحساب الحالي."}</p>
           </div>
-          <DataTable columns={columns} rows={rows} onRowClick={openEditDrawer} />
+          <DataTable columns={columns} rows={rows} onRowClick={canEdit ? openEditDrawer : undefined} />
         </>
       )}
 
