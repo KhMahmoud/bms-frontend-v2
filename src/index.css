@@ -5,9 +5,9 @@
   --primary-blue-hover: #1d4ed8;
   --soft-blue: #eff6ff;
   --navy: #172554;
-  --sidebar-navy: #1e3a8a;
-  --sidebar-violet: #6d28d9;
-  --page-bg: #f6f8fc;
+  --sidebar-navy: #2c2f7a;
+  --sidebar-violet: #23265f;
+  --page-bg: #f5f7fb;
   --card-bg: #ffffff;
   --border-color: #e2e8f0;
   --text-primary: #0f172a;
@@ -79,17 +79,17 @@ input[type="number"]::-webkit-inner-spin-button {
   border: 1px solid var(--border-color);
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
-    0 12px 30px rgba(15, 23, 42, 0.04);
+    0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 .sidebar-panel {
   background:
-    radial-gradient(circle at top, rgba(37, 99, 235, 0.08) 0%, transparent 34%),
-    linear-gradient(180deg, #f8fbff 0%, #f3f7fd 100%);
-  border: 1px solid #dbe7f6;
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.08) 0%, transparent 30%),
+    linear-gradient(180deg, var(--sidebar-navy) 0%, var(--sidebar-violet) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 14px 32px rgba(15, 23, 42, 0.05);
+    0 1px 2px rgba(15, 23, 42, 0.05),
+    0 18px 40px rgba(35, 38, 95, 0.22);
 }
 
 .btn-primary {
@@ -162,4 +162,44 @@ option {
 
 .soft-hover:hover {
   background: #f8fafc;
+}
+
+.dashboard-interactive {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.dashboard-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 14px 32px rgba(15, 23, 42, 0.05);
+}
+
+.status-pulse {
+  animation: statusPulse 2.2s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.35);
+}
+
+@keyframes statusPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.35);
+  }
+
+  70% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
 }
