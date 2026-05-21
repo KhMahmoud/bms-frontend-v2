@@ -4,12 +4,12 @@ import { Sidebar } from "./Sidebar";
 
 export function AppShell() {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#f8fbff_0%,#f6f8fc_42%,#f3f6fb_100%)] p-3 md:p-4">
-      <div className="mx-auto grid max-w-[1520px] gap-5 lg:grid-cols-[292px_minmax(0,1fr)]">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#fbfcfe_0%,#f4f7fb_100%)] p-4 md:p-5">
+      <div className="mx-auto grid max-w-[1480px] gap-7 lg:grid-cols-[258px_minmax(0,1fr)]">
         <div className="self-start lg:sticky lg:top-4">
           <Sidebar />
         </div>
-        <main className="min-w-0 flex-1 pb-10 pt-1">
+        <main className="min-w-0 flex-1 pb-12 pt-1">
           <Outlet />
         </main>
       </div>
