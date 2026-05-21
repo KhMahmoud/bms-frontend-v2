@@ -108,35 +108,45 @@ export function DashboardPage() {
       value: formatCurrency(summary.total_sales),
       helper: "قيمة الفواتير",
       icon: CircleDollarSign,
-      tone: "bg-slate-100 text-slate-700",
+      cardTone: "bg-[#F8FAFC] border-[#CBD5E1]",
+      iconTone: "bg-[#EEF2F7] text-slate-700",
+      textTone: "text-slate-700",
     },
     {
       label: "المحصّل",
       value: formatCurrency(summary.total_collected),
       helper: `${collectionRate}% محصّل`,
       icon: CreditCard,
-      tone: "bg-[#E8F7EF] text-[#166534]",
+      cardTone: "bg-[#E8F7EF] border-[#C7E7D2]",
+      iconTone: "bg-[#D7F0E1] text-[#166534]",
+      textTone: "text-[#166534]",
     },
     {
       label: "الذمم المستحقة",
       value: formatCurrency(summary.total_receivables),
       helper: `${receivablesRate}% مفتوح`,
       icon: Wallet,
-      tone: "bg-[#FBF4D7] text-[#946200]",
+      cardTone: "bg-[#FEF2F2] border-[#FECACA]",
+      iconTone: "bg-[#FECACA] text-[#991B1B]",
+      textTone: "text-[#991B1B]",
     },
     {
       label: "العملاء",
       value: overview.customer_count,
       helper: `${summary.active_customers} نشط`,
       icon: Users,
-      tone: "bg-blue-50 text-slate-700",
+      cardTone: "bg-[#EFF6FF] border-[#DBEAFE]",
+      iconTone: "bg-[#DBEAFE] text-[#1E3A8A]",
+      textTone: "text-[#1E3A8A]",
     },
     {
       label: "مخزون منخفض",
       value: overview.low_stock_count,
       helper: "يحتاج متابعة",
       icon: AlertTriangle,
-      tone: "bg-[#FBF4D7] text-[#946200]",
+      cardTone: "bg-[#FBF4D7] border-[#F5E8A8]",
+      iconTone: "bg-[#F5E8A8] text-[#946200]",
+      textTone: "text-[#946200]",
     },
   ];
 
@@ -170,13 +180,13 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex flex-col gap-2 rounded-[16px] border border-slate-300/70 bg-white px-4 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)] md:flex-row md:items-center md:justify-between">
+      <header className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">مرحباً، Demo Administrator</p>
-          <h1 className="mt-0.5 text-[1.7rem] font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
+          <h1 className="text-[1.55rem] font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
+          <p className="mt-0.5 text-sm font-medium text-slate-500">مرحباً، Demo Administrator</p>
         </div>
 
-        <div className="flex h-9 w-full max-w-sm items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3.5 text-sm text-slate-500">
+        <div className="flex h-8 w-full max-w-[250px] items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-sm text-slate-500">
           <Search className="h-4 w-4 text-slate-400" />
           <span>بحث سريع في المؤشرات...</span>
         </div>
@@ -197,15 +207,15 @@ export function DashboardPage() {
             return (
               <article
                 key={item.label}
-                className="dashboard-interactive rounded-[16px] border border-slate-300/80 bg-white px-4 py-4 shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
+                className={`dashboard-interactive rounded-[16px] border px-4 py-4 shadow-[0_10px_22px_rgba(15,23,42,0.04)] ${item.cardTone}`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0 text-right">
-                    <p className="truncate text-sm font-semibold text-slate-500">{item.label}</p>
+                    <p className={`truncate text-sm font-semibold ${item.textTone}`}>{item.label}</p>
                     <p className="mt-3 text-[1.7rem] font-semibold leading-tight text-slate-950">{item.value}</p>
                     <p className="mt-1 text-xs text-slate-500">{item.helper}</p>
                   </div>
-                  <div className={`shrink-0 rounded-[12px] p-2.5 ${item.tone}`}>
+                  <div className={`shrink-0 rounded-[12px] p-2.5 ${item.iconTone}`}>
                     <Icon className="h-4 w-4" />
                   </div>
                 </div>
