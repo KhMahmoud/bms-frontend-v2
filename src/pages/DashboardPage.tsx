@@ -1,4 +1,15 @@
-import { AlertTriangle, BadgeDollarSign, Box, CircleDollarSign, ReceiptText, Users, Wallet } from "lucide-react";
+import {
+  AlertTriangle,
+  BarChart3,
+  Boxes,
+  CircleDollarSign,
+  CreditCard,
+  PackageSearch,
+  ReceiptText,
+  Search,
+  Users,
+  Wallet,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { StatePanel } from "../components/ui/StatePanel";
@@ -82,13 +93,28 @@ export function DashboardPage() {
   const receivablesRate = totalSales > 0 ? clampPercentage((totalReceivables / totalSales) * 100) : 0;
   const customerBase = Math.max(overview.customer_count, 1);
   const activeCustomersRate = clampPercentage((summary.active_customers / customerBase) * 100);
+  const maxFinancialValue = Math.max(totalSales, totalCollected, totalReceivables, 1);
+  const maxUnitValue = Math.max(
+    overview.customer_count,
+    overview.product_count,
+    overview.invoice_count,
+    overview.payment_count,
+    1
+  );
 
-  const kpis = [
+  const overviewCards = [
     {
-      label: "نسبة التحصيل",
-      value: `${collectionRate}%`,
-      helper: "من إجمالي المبيعات",
+      label: "إجمالي المبيعات",
+      value: formatCurrency(summary.total_sales),
+      helper: "قيمة الفواتير",
       icon: CircleDollarSign,
+      tone: "bg-slate-100 text-slate-700",
+    },
+    {
+      label: "المحصّل",
+      value: formatCurrency(summary.total_collected),
+      helper: `${collectionRate}% محصّل`,
+      icon: CreditCard,
       tone: "bg-[#E8F7EF] text-[#166534]",
     },
     {
@@ -99,244 +125,221 @@ export function DashboardPage() {
       tone: "bg-[#FBF4D7] text-[#946200]",
     },
     {
-      label: "المحصّل",
-      value: formatCurrency(summary.total_collected),
-      helper: "المبالغ المستلمة",
-      icon: BadgeDollarSign,
-      tone: "bg-[#E8F7EF] text-[#166534]",
-    },
-    {
-      label: "العملاء النشطون",
-      value: summary.active_customers,
-      helper: `${activeCustomersRate}% من العملاء`,
+      label: "العملاء",
+      value: overview.customer_count,
+      helper: `${summary.active_customers} نشط`,
       icon: Users,
-      tone: "bg-slate-100 text-slate-700",
+      tone: "bg-blue-50 text-slate-700",
     },
     {
       label: "مخزون منخفض",
       value: overview.low_stock_count,
-      helper: "منتجات تحتاج متابعة",
+      helper: "يحتاج متابعة",
       icon: AlertTriangle,
       tone: "bg-[#FBF4D7] text-[#946200]",
     },
   ];
 
-  const todaySignals = [
-    {
-      label: "إجمالي المبيعات",
-      value: formatCurrency(summary.total_sales),
-      note: "قيمة الفواتير المسجلة",
-    },
-    {
-      label: "الفواتير الحالية",
-      value: overview.invoice_count,
-      note: "عدد الفواتير داخل النظام",
-    },
-    {
-      label: "الدفعات الحالية",
-      value: overview.payment_count,
-      note: "دفعات مرتبطة بالحركة",
-    },
-  ];
-
-  const unitActivity = [
-    ["العملاء", overview.customer_count],
-    ["المنتجات", overview.product_count],
-    ["الفواتير", overview.invoice_count],
-    ["الدفعات", overview.payment_count],
-  ];
-  const maxFinancialValue = Math.max(totalSales, totalCollected, totalReceivables, 1);
   const financialBars = [
     {
       label: "إجمالي المبيعات",
       value: formatCurrency(summary.total_sales),
       percent: clampPercentage((totalSales / maxFinancialValue) * 100),
-      tone: "bg-[#2C2F7A]",
+      tone: "bg-[#334155]",
     },
     {
       label: "المحصّل",
       value: formatCurrency(summary.total_collected),
       percent: clampPercentage((totalCollected / maxFinancialValue) * 100),
-      tone: "bg-[#67C89A]",
+      tone: "bg-[#8FD3A5]",
     },
     {
       label: "المستحق",
       value: formatCurrency(summary.total_receivables),
       percent: clampPercentage((totalReceivables / maxFinancialValue) * 100),
-      tone: "bg-[#E6B325]",
+      tone: "bg-[#E8D8B8]",
     },
   ];
 
+  const unitActivity = [
+    ["العملاء", overview.customer_count, "bg-[#8FD3A5]"],
+    ["المنتجات", overview.product_count, "bg-[#334155]"],
+    ["الفواتير", overview.invoice_count, "bg-[#E8D8B8]"],
+    ["الدفعات", overview.payment_count, "bg-slate-400"],
+  ] as const;
+
   return (
-    <div className="space-y-6">
-      <section className="dashboard-card rounded-[24px] p-5">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
-            <span className="rounded-full bg-[#E8F7EF] px-3 py-1 text-xs font-semibold text-[#166534]">
-              Financial Overview
-            </span>
-          </div>
-          <p className="text-sm font-medium text-slate-500">نظرة مالية مركزة على التحصيل والذمم والمخزون</p>
+    <div className="space-y-5">
+      <header className="flex flex-col gap-3 rounded-[18px] border border-slate-300/70 bg-white px-5 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-sm font-medium text-slate-500">مرحباً، Demo Administrator</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_260px_260px]">
-          <div className="min-w-0">
-            <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
-              {kpis.map((item) => {
-                const Icon = item.icon;
+        <div className="flex h-10 w-full max-w-sm items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-4 text-sm text-slate-500">
+          <Search className="h-4 w-4 text-slate-400" />
+          <span>بحث سريع في المؤشرات...</span>
+        </div>
+      </header>
 
-                return (
-                  <article
-                    key={item.label}
-                    className="dashboard-interactive rounded-[14px] border border-slate-200 bg-slate-50/80 px-3.5 py-3"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className={`rounded-[12px] p-2 ${item.tone}`}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <p className="truncate text-sm font-semibold text-slate-600">{item.label}</p>
-                    </div>
-                    <p className="mt-2 text-[1.55rem] font-semibold leading-tight text-slate-950">{item.value}</p>
-                    <p className="mt-1 truncate text-xs text-slate-500">{item.helper}</p>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
+      <section>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-950">نظرة عامة</h2>
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-500 ring-1 ring-slate-300">
+            Dashboard Summary
+          </span>
+        </div>
 
-          <aside className="rounded-[18px] bg-[linear-gradient(180deg,#2C2F7A_0%,#23265F_100%)] p-4 text-white shadow-[0_14px_30px_rgba(35,38,95,0.2)]">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold tracking-[0.16em] text-white/60">COLLECTION</p>
-                <p className="mt-1 text-sm text-white/72">نسبة التحصيل</p>
-              </div>
-              <span className="h-2.5 w-2.5 rounded-full bg-[#67C89A]" />
-            </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {overviewCards.map((item) => {
+            const Icon = item.icon;
 
-            <div className="mt-4 flex justify-center">
-              <div
-                className="flex h-[136px] w-[136px] items-center justify-center rounded-full"
-                style={{
-                  background: `conic-gradient(#67C89A 0 ${collectionRate}%, rgba(255,255,255,0.16) ${collectionRate}% 100%)`,
-                }}
+            return (
+              <article
+                key={item.label}
+                className="dashboard-interactive rounded-[16px] border border-slate-300/80 bg-white px-4 py-4 shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
               >
-                <div className="flex h-[96px] w-[96px] flex-col items-center justify-center rounded-full bg-[#23265F]">
-                  <span className="text-[1.75rem] font-semibold leading-none">{collectionRate}%</span>
-                  <span className="mt-1.5 text-xs text-white/65">محصّل</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="rounded-[12px] border border-white/10 bg-white/8 px-3 py-2.5">
-                <p className="text-xs text-white/58">العملاء</p>
-                <p className="mt-1 text-lg font-semibold">{summary.active_customers}</p>
-              </div>
-              <div className="rounded-[12px] border border-white/10 bg-white/8 px-3 py-2.5">
-                <p className="text-xs text-white/58">الدفعات</p>
-                <p className="mt-1 text-lg font-semibold">{overview.payment_count}</p>
-              </div>
-            </div>
-          </aside>
-
-          <aside className="rounded-[18px] border border-slate-200 bg-slate-50/85 p-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-base font-semibold text-slate-950">ملخص مالي</h2>
-                <p className="mt-1 text-xs text-slate-500">مقارنة سريعة حسب القيمة</p>
-              </div>
-              <div className="rounded-[12px] bg-white p-2 text-[#2C2F7A] ring-1 ring-slate-200">
-                <BadgeDollarSign className="h-4 w-4" />
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-4">
-              {financialBars.map((item) => (
-                <div key={item.label}>
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium text-slate-600">{item.label}</span>
-                    <span className="ltr-content text-sm font-semibold text-slate-950">{item.value}</span>
+                <div className="flex items-center justify-between gap-3">
+                  <div className={`rounded-[12px] p-2.5 ${item.tone}`}>
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-white ring-1 ring-slate-200">
-                    <div className={`h-full rounded-full ${item.tone}`} style={{ width: `${item.percent}%` }} />
-                  </div>
+                  <p className="truncate text-sm font-semibold text-slate-500">{item.label}</p>
                 </div>
-              ))}
-            </div>
-          </aside>
+                <p className="mt-4 text-[1.7rem] font-semibold leading-tight text-slate-950">{item.value}</p>
+                <p className="mt-1 text-xs text-slate-500">{item.helper}</p>
+              </article>
+            );
+          })}
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
-        <div className="dashboard-card dashboard-interactive rounded-[22px] p-6">
+      <section className="grid gap-5 xl:grid-cols-[1fr_1fr_1.1fr]">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">متابعة اليوم</h2>
-              <p className="mt-2 text-sm leading-7 text-slate-500">
-                قراءة سريعة للمؤشرات اليومية الأهم قبل الانتقال إلى تفاصيل الوحدات.
-              </p>
+              <h2 className="text-lg font-semibold text-slate-950">بطاقة العملاء</h2>
+              <p className="mt-1 text-sm text-slate-500">العملاء النشطون مقارنة بإجمالي العملاء.</p>
             </div>
-            <div className="rounded-[14px] bg-[#E8F7EF] p-3 text-[#166534]">
+            <div className="rounded-[12px] bg-slate-100 p-2.5 text-slate-700">
+              <Users className="h-5 w-5" />
+            </div>
+          </div>
+
+          <div className="mt-5 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-4xl font-semibold text-slate-950">{summary.active_customers}</p>
+              <p className="mt-1 text-sm text-slate-500">من أصل {overview.customer_count} عميل</p>
+            </div>
+            <div className="rounded-[14px] bg-[#E8F7EF] px-3 py-2 text-sm font-semibold text-[#166534]">
+              {activeCustomersRate}%
+            </div>
+          </div>
+
+          <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-slate-100">
+            <div className="h-full rounded-full bg-[#8FD3A5]" style={{ width: `${activeCustomersRate}%` }} />
+          </div>
+        </article>
+
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-950">بطاقة التحصيل</h2>
+              <p className="mt-1 text-sm text-slate-500">نسبة المحصّل من إجمالي المبيعات.</p>
+            </div>
+            <div className="rounded-[12px] bg-[#E8F7EF] p-2.5 text-[#166534]">
+              <CircleDollarSign className="h-5 w-5" />
+            </div>
+          </div>
+
+          <div className="mt-5 flex items-center justify-center">
+            <div
+              className="flex h-[150px] w-[150px] items-center justify-center rounded-full"
+              style={{
+                background: `conic-gradient(#8FD3A5 0 ${collectionRate}%, #E2E8F0 ${collectionRate}% 100%)`,
+              }}
+            >
+              <div className="flex h-[106px] w-[106px] flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
+                <span className="text-3xl font-semibold text-slate-950">{collectionRate}%</span>
+                <span className="mt-1 text-xs text-slate-500">محصّل</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-950">المؤشرات المالية</h2>
+              <p className="mt-1 text-sm text-slate-500">مقارنة مختصرة حسب القيمة الحالية.</p>
+            </div>
+            <div className="rounded-[12px] bg-slate-100 p-2.5 text-slate-700">
+              <BarChart3 className="h-5 w-5" />
+            </div>
+          </div>
+
+          <div className="mt-5 space-y-4">
+            {financialBars.map((item) => (
+              <div key={item.label}>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-slate-600">{item.label}</span>
+                  <span className="ltr-content text-sm font-semibold text-slate-950">{item.value}</span>
+                </div>
+                <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+                  <div className={`h-full rounded-full ${item.tone}`} style={{ width: `${item.percent}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-950">نشاط الوحدات</h2>
+              <p className="mt-1 text-sm text-slate-500">حجم البيانات الحالية في الوحدات الأساسية.</p>
+            </div>
+            <div className="rounded-[12px] bg-slate-100 p-2.5 text-slate-700">
               <ReceiptText className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {todaySignals.map((item) => (
-              <div key={item.label} className="dashboard-interactive rounded-[18px] border border-slate-200 bg-white px-4 py-5">
-                <p className="text-sm font-medium text-slate-500">{item.label}</p>
-                <p className="mt-3 text-[1.8rem] font-semibold tracking-tight text-slate-950">{item.value}</p>
-                <p className="mt-2 text-xs text-slate-500">{item.note}</p>
+          <div className="mt-5 grid gap-3 md:grid-cols-4">
+            {unitActivity.map(([label, value, tone]) => (
+              <div key={label} className="rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-4">
+                <p className="text-sm font-medium text-slate-500">{label}</p>
+                <p className="mt-2 text-3xl font-semibold text-slate-950">{value}</p>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                  <div
+                    className={`h-full rounded-full ${tone}`}
+                    style={{ width: `${clampPercentage((Number(value) / maxUnitValue) * 100)}%` }}
+                  />
+                </div>
               </div>
             ))}
           </div>
-        </div>
+        </article>
 
-        <div className="dashboard-card dashboard-interactive rounded-[22px] p-6">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">تنبيه المخزون</h2>
-              <p className="mt-2 text-sm leading-7 text-slate-500">
-                هذه البطاقة تساعد على تحديد المنتجات التي تتطلب إعادة تزويد أو مراجعة.
-              </p>
+              <h2 className="text-lg font-semibold text-slate-950">تنبيه المخزون</h2>
+              <p className="mt-1 text-sm text-slate-500">منتجات تحتاج إلى متابعة قبل نفاد المخزون.</p>
             </div>
-            <div className="rounded-[14px] bg-[#FBF4D7] p-3 text-[#946200]">
-              <Box className="h-5 w-5" />
+            <div className="rounded-[12px] bg-[#FBF4D7] p-2.5 text-[#946200]">
+              <PackageSearch className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-6 rounded-[18px] border border-[#F0DE9A] bg-[#FBF4D7] px-5 py-5">
+          <div className="mt-5 rounded-[16px] border border-[#E8D8B8] bg-[#FBF4D7] px-5 py-5">
             <p className="text-sm font-semibold text-[#946200]">عدد المنتجات منخفضة المخزون</p>
-            <p className="mt-3 text-5xl font-semibold text-slate-950">{overview.low_stock_count}</p>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              كلما ارتفع هذا الرقم زادت الحاجة لمراجعة الأصناف الحساسة قبل حدوث نقص فعلي.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="dashboard-card dashboard-interactive rounded-[22px] p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-950">نشاط الوحدات</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-500">
-              عرض مختصر لحجم البيانات الحالية في الوحدات الأساسية الجاهزة ضمن نسخة العرض.
-            </p>
-          </div>
-          <div className="rounded-[14px] bg-slate-100 p-3 text-slate-700">
-            <BadgeDollarSign className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {unitActivity.map(([label, value]) => (
-            <div key={label} className="dashboard-interactive rounded-[18px] border border-slate-200 bg-white px-4 py-5">
-              <p className="text-sm font-medium text-slate-500">{label}</p>
-              <p className="mt-3 text-[2rem] font-semibold tracking-tight text-slate-950">{value}</p>
+            <div className="mt-3 flex items-end justify-between gap-3">
+              <p className="text-5xl font-semibold text-slate-950">{overview.low_stock_count}</p>
+              <Boxes className="h-10 w-10 text-[#946200]/45" />
             </div>
-          ))}
-        </div>
+          </div>
+        </article>
       </section>
     </div>
   );

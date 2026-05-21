@@ -4,8 +4,8 @@ import { Sidebar } from "./Sidebar";
 
 export function AppShell() {
   return (
-    <div className="min-h-screen bg-[#F5F7FB] p-4 md:p-5">
-      <div className="mx-auto grid max-w-[1480px] gap-6 lg:grid-cols-[272px_minmax(0,1fr)]">
+    <div className="min-h-screen bg-[#EAF0F6] p-4 md:p-5">
+      <div className="mx-auto grid max-w-[1480px] gap-5 lg:grid-cols-[268px_minmax(0,1fr)]">
         <div className="self-start lg:sticky lg:top-4">
           <Sidebar />
         </div>
