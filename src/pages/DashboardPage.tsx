@@ -6,7 +6,6 @@ import {
   CreditCard,
   PackageSearch,
   ReceiptText,
-  Search,
   Users,
   Wallet,
 } from "lucide-react";
@@ -179,22 +178,24 @@ export function DashboardPage() {
   ] as const;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <section>
-        <div className="mb-3 space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-3 space-y-2">
+          <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="border-r-4 border-[#8FD3A5] pr-3">
               <h1 className="text-[1.35rem] font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
               <p className="mt-0.5 text-sm font-medium text-slate-500">مرحباً، Demo Administrator</p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-[#F8FAFC] px-3 py-1 text-[11px] font-semibold text-slate-500 ring-1 ring-slate-300">
-                Dashboard Summary
-              </span>
-              <div className="flex h-9 w-full min-w-[220px] max-w-[250px] items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-sm text-slate-500">
-                <Search className="h-4 w-4 text-slate-400" />
-                <span>بحث سريع في المؤشرات...</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="rounded-full border border-[#C7E7D2] bg-[#E8F7EF]/80 px-3 py-1.5 text-xs font-medium text-[#166534]">
+                التحصيل مستقر: {collectionRate}%
+              </div>
+              <div className="rounded-full border border-[#FECACA] bg-[#FEF2F2]/90 px-3 py-1.5 text-xs font-medium text-[#991B1B]">
+                الذمم المفتوحة: {formatCurrency(summary.total_receivables)}
+              </div>
+              <div className="rounded-full border border-[#F5E8A8] bg-[#FBF4D7]/95 px-3 py-1.5 text-xs font-medium text-[#946200]">
+                مخزون منخفض: {overview.low_stock_count}
               </div>
             </div>
           </div>
@@ -204,19 +205,19 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           {overviewCards.map((item) => {
             const Icon = item.icon;
 
             return (
               <article
                 key={item.label}
-                className={`dashboard-interactive flex min-h-[126px] rounded-[16px] border px-4 py-4 shadow-[0_10px_22px_rgba(15,23,42,0.04)] ${item.cardTone}`}
+                className={`dashboard-interactive flex min-h-[112px] rounded-[16px] border px-4 py-3.5 shadow-[0_10px_22px_rgba(15,23,42,0.04)] ${item.cardTone}`}
               >
                 <div className="flex w-full items-start justify-between gap-3">
                   <div className="min-w-0 text-right">
                     <p className={`truncate text-sm font-semibold ${item.textTone}`}>{item.label}</p>
-                    <p className="mt-2.5 text-[1.7rem] font-semibold leading-tight text-slate-950">{item.value}</p>
+                    <p className="mt-2 text-[1.55rem] font-semibold leading-tight text-slate-950">{item.value}</p>
                     <p className="mt-1 text-xs text-slate-500">{item.helper}</p>
                   </div>
                   <div className={`shrink-0 rounded-[12px] p-2.5 ${item.iconTone}`}>
@@ -229,21 +230,21 @@ export function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[1fr_1fr_1.1fr]">
-        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+      <section className="grid gap-4 xl:grid-cols-[1fr_1fr_1.1fr]">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-slate-950">بطاقة العملاء</h2>
-              <p className="mt-1 text-sm text-slate-500">العملاء النشطون مقارنة بإجمالي العملاء.</p>
+              <p className="mt-1 text-sm text-slate-500">النشطون مقابل الإجمالي.</p>
             </div>
             <div className="rounded-[12px] bg-slate-100 p-2.5 text-slate-700">
               <Users className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-5 flex items-end justify-between gap-4">
+          <div className="mt-4 flex items-end justify-between gap-4">
             <div>
-              <p className="text-4xl font-semibold text-slate-950">{summary.active_customers}</p>
+              <p className="text-[2rem] font-semibold text-slate-950">{summary.active_customers}</p>
               <p className="mt-1 text-sm text-slate-500">من أصل {overview.customer_count} عميل</p>
             </div>
             <div className="rounded-[14px] bg-[#E8F7EF] px-3 py-2 text-sm font-semibold text-[#166534]">
@@ -251,56 +252,56 @@ export function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-slate-100">
+          <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
             <div className="h-full rounded-full bg-[#8FD3A5]" style={{ width: `${activeCustomersRate}%` }} />
           </div>
         </article>
 
-        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-slate-950">بطاقة التحصيل</h2>
-              <p className="mt-1 text-sm text-slate-500">نسبة المحصّل من إجمالي المبيعات.</p>
+              <p className="mt-1 text-sm text-slate-500">نسبة المحصّل من المبيعات.</p>
             </div>
             <div className="rounded-[12px] bg-[#E8F7EF] p-2.5 text-[#166534]">
               <CircleDollarSign className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-5 flex items-center justify-center">
+          <div className="mt-4 flex items-center justify-center">
             <div
-              className="flex h-[150px] w-[150px] items-center justify-center rounded-full"
+              className="flex h-[132px] w-[132px] items-center justify-center rounded-full"
               style={{
                 background: `conic-gradient(#8FD3A5 0 ${collectionRate}%, #E2E8F0 ${collectionRate}% 100%)`,
               }}
             >
-              <div className="flex h-[106px] w-[106px] flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-                <span className="text-3xl font-semibold text-slate-950">{collectionRate}%</span>
+              <div className="flex h-[94px] w-[94px] flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
+                <span className="text-[1.7rem] font-semibold text-slate-950">{collectionRate}%</span>
                 <span className="mt-1 text-xs text-slate-500">محصّل</span>
               </div>
             </div>
           </div>
         </article>
 
-        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-slate-950">المؤشرات المالية</h2>
-              <p className="mt-1 text-sm text-slate-500">مقارنة مختصرة حسب القيمة الحالية.</p>
+              <p className="mt-1 text-sm text-slate-500">مقارنة حسب القيمة الحالية.</p>
             </div>
             <div className="rounded-[12px] bg-slate-100 p-2.5 text-slate-700">
               <BarChart3 className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-5 space-y-4">
+          <div className="mt-4 space-y-3">
             {financialBars.map((item) => (
               <div key={item.label}>
-                <div className="mb-2 flex items-center justify-between gap-3">
+                <div className="mb-1.5 flex items-center justify-between gap-3">
                   <span className="text-sm font-medium text-slate-600">{item.label}</span>
                   <span className="ltr-content text-sm font-semibold text-slate-950">{item.value}</span>
                 </div>
-                <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+                <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
                   <div className={`h-full rounded-full ${item.tone}`} style={{ width: `${item.percent}%` }} />
                 </div>
               </div>
@@ -309,24 +310,24 @@ export function DashboardPage() {
         </article>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-slate-950">نشاط الوحدات</h2>
-              <p className="mt-1 text-sm text-slate-500">حجم البيانات الحالية في الوحدات الأساسية.</p>
+              <p className="mt-1 text-sm text-slate-500">حجم البيانات في الوحدات الأساسية.</p>
             </div>
             <div className="rounded-[12px] bg-slate-100 p-2.5 text-slate-700">
               <ReceiptText className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-4">
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
             {unitActivity.map(([label, value, tone]) => (
-              <div key={label} className="rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-4">
+              <div key={label} className="rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-3.5">
                 <p className="text-sm font-medium text-slate-500">{label}</p>
-                <p className="mt-2 text-3xl font-semibold text-slate-950">{value}</p>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                <p className="mt-1.5 text-[1.7rem] font-semibold text-slate-950">{value}</p>
+                <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-white">
                   <div
                     className={`h-full rounded-full ${tone}`}
                     style={{ width: `${clampPercentage((Number(value) / maxUnitValue) * 100)}%` }}
@@ -337,22 +338,22 @@ export function DashboardPage() {
           </div>
         </article>
 
-        <article className="dashboard-card dashboard-interactive rounded-[18px] p-5">
+        <article className="dashboard-card dashboard-interactive rounded-[18px] p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-slate-950">تنبيه المخزون</h2>
-              <p className="mt-1 text-sm text-slate-500">منتجات تحتاج إلى متابعة قبل نفاد المخزون.</p>
+              <p className="mt-1 text-sm text-slate-500">منتجات تحتاج متابعة قبل النفاد.</p>
             </div>
             <div className="rounded-[12px] bg-[#FBF4D7] p-2.5 text-[#946200]">
               <PackageSearch className="h-5 w-5" />
             </div>
           </div>
 
-          <div className="mt-5 rounded-[16px] border border-[#E8D8B8] bg-[#FBF4D7] px-5 py-5">
+          <div className="mt-4 rounded-[16px] border border-[#E8D8B8] bg-[#FBF4D7] px-4 py-4">
             <p className="text-sm font-semibold text-[#946200]">عدد المنتجات منخفضة المخزون</p>
-            <div className="mt-3 flex items-end justify-between gap-3">
-              <p className="text-5xl font-semibold text-slate-950">{overview.low_stock_count}</p>
-              <Boxes className="h-10 w-10 text-[#946200]/45" />
+            <div className="mt-2.5 flex items-end justify-between gap-3">
+              <p className="text-[2.6rem] font-semibold text-slate-950">{overview.low_stock_count}</p>
+              <Boxes className="h-8 w-8 text-[#946200]/45" />
             </div>
           </div>
         </article>
