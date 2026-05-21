@@ -157,7 +157,7 @@ export function DashboardPage() {
       label: "المستحق",
       value: formatCurrency(summary.total_receivables),
       percent: clampPercentage((totalReceivables / maxFinancialValue) * 100),
-      tone: "bg-[#E8D8B8]",
+      tone: "bg-[#EF4444]",
     },
   ];
 
@@ -170,13 +170,13 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex flex-col gap-3 rounded-[18px] border border-slate-300/70 bg-white px-5 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:flex-row md:items-center md:justify-between">
+      <header className="flex flex-col gap-2 rounded-[16px] border border-slate-300/70 bg-white px-4 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)] md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">مرحباً، Demo Administrator</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
+          <h1 className="mt-0.5 text-[1.7rem] font-semibold tracking-tight text-slate-950">لوحة التحكم</h1>
         </div>
 
-        <div className="flex h-10 w-full max-w-sm items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-4 text-sm text-slate-500">
+        <div className="flex h-9 w-full max-w-sm items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3.5 text-sm text-slate-500">
           <Search className="h-4 w-4 text-slate-400" />
           <span>بحث سريع في المؤشرات...</span>
         </div>
@@ -200,13 +200,15 @@ export function DashboardPage() {
                 className="dashboard-interactive rounded-[16px] border border-slate-300/80 bg-white px-4 py-4 shadow-[0_10px_22px_rgba(15,23,42,0.04)]"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <div className={`rounded-[12px] p-2.5 ${item.tone}`}>
+                  <div className="min-w-0 text-right">
+                    <p className="truncate text-sm font-semibold text-slate-500">{item.label}</p>
+                    <p className="mt-3 text-[1.7rem] font-semibold leading-tight text-slate-950">{item.value}</p>
+                    <p className="mt-1 text-xs text-slate-500">{item.helper}</p>
+                  </div>
+                  <div className={`shrink-0 rounded-[12px] p-2.5 ${item.tone}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <p className="truncate text-sm font-semibold text-slate-500">{item.label}</p>
                 </div>
-                <p className="mt-4 text-[1.7rem] font-semibold leading-tight text-slate-950">{item.value}</p>
-                <p className="mt-1 text-xs text-slate-500">{item.helper}</p>
               </article>
             );
           })}

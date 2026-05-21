@@ -85,7 +85,10 @@ export function Sidebar() {
       </div>
 
       <div className="mt-5 rounded-[14px] border border-white/8 bg-[#263445]/45 px-4 py-4">
-        <p className="text-sm font-semibold text-white">الوحدات القادمة</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-white">الوحدات القادمة</p>
+          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-white/65">لاحقاً</span>
+        </div>
         <p className="mt-1 text-xs leading-6 text-white/55">موجودة ضمن الهيكل العام لكنها غير مفعلة في نسخة العرض الحالية.</p>
 
         <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 lg:grid-cols-1">
